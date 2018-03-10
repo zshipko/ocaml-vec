@@ -1,0 +1,10 @@
+[package]
+name = "ocaml-vec"
+version = "0.1.0"
+authors = ["Zach Shipko <zachshipko@gmail.com>"]
+
+[lib]
+crate-type = ["staticlib"]
+
+[dependencies]
+ocaml = "0.3"

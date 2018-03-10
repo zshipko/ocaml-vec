@@ -1,0 +1,6 @@
+(jbuild_version 1)
+
+(library
+    ((name vec)
+     (public_name vec)
+     (flags (-ccopt -L../../target/debug -cclib -locaml_vec -cclib -lpthread))))
