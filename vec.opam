@@ -1,5 +1,5 @@
 opam-version: "1.2"
-version: "1.0"
+version: "0.1"
 maintainer: "zachshipko@gmail.com"
 authors: ["Zach Shipko"]
 homepage: "https://github.com/zshipko/ocaml-vec"
@@ -7,6 +7,5 @@ bug-reports: "https://github.com/zshipko/ocaml-vec/issues"
 dev-repo: "https://github.com/zshipko/ocaml-vec.git"
 license: "ISC"
 build: [
-    ["cargo" "build" "--release"]
-    ["jbuilder" "build"]
+    [make]
 ]

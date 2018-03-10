@@ -4,4 +4,7 @@
     ((name vec)
      (public_name vec)
      (wrapped false)
-     (flags (-ccopt -L../../target/release -cclib -locaml_vec -cclib -lpthread))))
+     (libraries (threads))
+     (ocamlc_flags (-linkall -dllpath . -dllib -ldllvec_stubs.so))
+     (ocamlopt_flags (-linkall -cclib -lvec_stubs))
+     (self_build_stubs_archive (vec))))

@@ -1,10 +1,10 @@
 [package]
-name = "ocaml-vec"
+name = "vec-stubs"
 version = "0.1.0"
 authors = ["Zach Shipko <zachshipko@gmail.com>"]
 
 [lib]
-crate-type = ["staticlib"]
+crate-type = ["staticlib", "cdylib"]
 
 [dependencies]
 ocaml = "0.3"
