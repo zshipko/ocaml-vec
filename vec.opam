@@ -6,6 +6,7 @@ homepage: "https://github.com/zshipko/ocaml-vec"
 bug-reports: "https://github.com/zshipko/ocaml-vec/issues"
 dev-repo: "https://github.com/zshipko/ocaml-vec.git"
 license: "ISC"
-#build: [
-#    ["jbuilder" "build" "--only" "vec" "--root" "." "-j" jobs "@install"]
-#]
+build: [
+    ["cargo" "build" "--release"]
+    ["jbuilder" "build"]
+]

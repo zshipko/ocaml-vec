@@ -3,4 +3,5 @@
 (library
     ((name vec)
      (public_name vec)
-     (flags (-ccopt -L../../target/debug -cclib -locaml_vec -cclib -lpthread))))
+     (wrapped false)
+     (flags (-ccopt -L../../target/release -cclib -locaml_vec -cclib -lpthread))))

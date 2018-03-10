@@ -1,6 +1,6 @@
 # ocaml-vec
 
-An example library using [ocaml-rs](https://github.com/zshipko/ocaml-rs) that wraps the Rust `Vec` type for use in OCaml.
+An [ocaml-rs](https://github.com/zshipko/ocaml-rs) wrapper around the Rust `Vec` type for use in OCaml
 
 ## Building
 
