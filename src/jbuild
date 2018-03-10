@@ -5,6 +5,6 @@
      (public_name vec)
      (wrapped false)
      (libraries (threads))
-     (ocamlc_flags (-linkall -dllpath . -dllib -ldllvec_stubs))
+     (ocamlc_flags (-linkall -dllpath . -dllib -lvec_stubs))
      (ocamlopt_flags (-linkall -cclib -lvec_stubs))
      (self_build_stubs_archive (vec))))
