@@ -6,6 +6,9 @@ module C = struct
     external vec_length: 'a vec -> int = "vec_length"
     external vec_push: 'a vec -> 'a -> 'a vec = "vec_push"
     external vec_pop: 'a vec -> 'a option * 'a vec = "vec_pop"
+    external vec_clear: 'a vec -> 'a vec = "vec_clear"
+    external vec_index: 'a vec -> int -> 'a option = "vec_index"
+    external vec_set_index: 'a vec -> int -> 'a -> unit = "vec_set_index"
 end
 
 type 'a t = {
@@ -21,10 +24,22 @@ let create n = _wrap {
 }
 
 let length v = C.vec_length v.vec
+
 let push v x = v.vec <- C.vec_push v.vec x
+
 let pop v =
     let (x, vec) = C.vec_pop v.vec in
     v.vec <- vec;
     x
 
+let clear v =
+    v.vec <- C.vec_clear v.vec
 
+let get v i =
+    C.vec_index v.vec i
+
+let set v i x =
+    C.vec_set_index v.vec i x
+
+let ( .|[] ) = get
+let ( .|[]<- ) = set

@@ -18,6 +18,18 @@ macro_rules! load_vec {
     }
 }
 
+macro_rules! modify_vec {
+    ($v:ident, $vec:ident, $dest:ident, $block:block) => {
+        load_vec!($v, $vec, {
+            $block
+            let new_ptr = $vec.as_mut_ptr();
+            let new_len = $vec.len();
+            let new_cap = $vec.capacity();
+            $dest = tuple!(ocaml::Value::ptr(new_ptr), ocaml::Value::usize(new_len), ocaml::Value::usize(new_cap));
+        });
+    }
+}
+
 caml!(vec_create, |n|, <dest>, {
     let mut vec: Vec<ocaml::Value> = Vec::with_capacity(n.usize_val());
     let ptr = vec.as_mut_ptr();
@@ -41,28 +53,45 @@ caml!(vec_length, |handle|, <dest>, {
 } -> dest);
 
 caml!(vec_push, |handle, x|, <dest>, {
-    load_vec!(handle, vec, {
+    modify_vec!(handle, vec, dest, {
         vec.push(x);
-        let new_ptr = vec.as_mut_ptr();
-        let new_len = vec.len();
-        let new_cap = vec.capacity();
-        dest = tuple!(ocaml::Value::ptr(new_ptr), ocaml::Value::usize(new_len), ocaml::Value::usize(new_cap));
     });
 } -> dest);
 
-caml!(vec_pop, |handle|, <dest, tmp>, {
-    load_vec!(handle, vec, {
-        let x = match vec.pop() {
+caml!(vec_pop, |handle|, <dest, val, tmp>, {
+    modify_vec!(handle, vec, tmp, {
+        val = match vec.pop() {
             Some(x) => {
                 ocaml::Value::some(x)
             },
             None => ocaml::Value::none()
         };
-        let new_ptr = vec.as_mut_ptr();
-        let new_len = vec.len();
-        let new_cap = vec.capacity();
+    });
+    dest = tuple!(val, ocaml::Value::from(tmp));
+} -> dest);
 
-        let tmp: ocaml::Tuple = tuple!(ocaml::Value::ptr(new_ptr), ocaml::Value::usize(new_len), ocaml::Value::usize(new_cap));
-        dest = tuple!(x, ocaml::Value::from(tmp));
+caml!(vec_clear, |handle|, <dest>, {
+    modify_vec!(handle, vec, dest, {
+        vec.clear()
     });
 } -> dest);
+
+caml!(vec_index, |handle, index|, <dest>, {
+    load_vec!(handle, vec, {
+        if vec.len() <= index.usize_val() {
+            dest = ocaml::Value::none();
+        } else {
+            dest = ocaml::Value::some(vec[index.usize_val()].clone())
+        }
+    });
+} -> dest);
+
+caml!(vec_set_index, |handle, index, x|, {
+    load_vec!(handle, vec, {
+        if vec.len() <= index.usize_val() {
+            return
+        }
+
+        vec[index.usize_val()] = x;
+    });
+});
