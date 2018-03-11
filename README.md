@@ -16,6 +16,10 @@ or to build manually:
     jbuilder build
     jbuilder runtest
 
+## Installation
+
+    opam pin add vec .
+
 
 ## API
 
