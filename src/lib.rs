@@ -53,15 +53,6 @@ caml!(vec_create, |n|, <dest>, {
     dest = tuple!(ocaml::Value::ptr(ptr), len, n; finalize);
 } -> dest);
 
-/*caml!(vec_free, |handle|, {
-    let ptr = handle.field(0).mut_ptr_val();
-    let len = handle.field(1).usize_val();
-    let cap = handle.field(2).usize_val();
-
-    let vec: Vec<ocaml::Value> = Vec::from_raw_parts(ptr, len, cap);
-    mem::drop(vec)
-});*/
-
 caml!(vec_length, |handle|, <dest>, {
     let len = handle.field(1).usize_val();
     dest = ocaml::Value::usize(len);
