@@ -1,12 +1,12 @@
-type 'a t
+type t
 
-val create: int -> 'a t
-val length: 'a t -> int
-val push: 'a t -> 'a -> unit
-val pop: 'a t -> 'a option
-val clear: 'a t -> unit
-val get: 'a t -> int -> 'a option
-val set: 'a t -> int -> 'a -> unit
+val create: int -> t
+val length: t -> int
+val push: t -> int -> unit
+val pop: t -> int option
+val clear: t -> unit
+val get: t -> int -> int option
+val set: t -> int -> int -> unit
 
-val ( .|[] ): 'a t -> int -> 'a option
-val ( .|[]<- ): 'a t -> int -> 'a -> unit
+val ( .|[] ): t -> int -> int option
+val ( .|[]<- ): t -> int -> int -> unit
