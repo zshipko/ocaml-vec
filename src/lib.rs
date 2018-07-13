@@ -5,17 +5,9 @@ use std::mem;
 
 extern "C" fn finalize(value: ocaml::core::Value) {
     let handle = ocaml::Value(value);
-    let ptr = handle.custom_ptr_val_mut::<(*mut i32, usize, usize)>();
-
-    let (p, len, cap) = unsafe {
-        *ptr
-    };
-
-    let vec: Vec<i32> = unsafe {
-        Vec::from_raw_parts(p, len, cap)
-    };
-
-    mem::drop(vec)
+    let ptr = handle.custom_ptr_val_mut::<Vec<i32>>();
+    mem::drop(ptr);
+    println!("Finalize");
 }
 
 macro_rules! load_vec {
