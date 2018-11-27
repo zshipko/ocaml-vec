@@ -1,6 +1,6 @@
 # ocaml-vec
 
-An [ocaml-rs](https://github.com/zshipko/ocaml-rs) wrapper around the Rust `Vec` type for use in OCaml
+An [ocaml-rs](https://github.com/zshipko/ocaml-rs) wrapper around a Rust `Vec<i32>` for use in OCaml
 
 ## Building
 
@@ -12,7 +12,7 @@ to run the tests:
 
 ## Installation
 
-    opam pin add vec .
+    opam pin add vec . --inplace-build
 
 
 ## API
