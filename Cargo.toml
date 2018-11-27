@@ -1,5 +1,5 @@
 [package]
-name = "vec-stubs"
+name = "vec_stubs"
 version = "0.1.0"
 authors = ["Zach Shipko <zachshipko@gmail.com>"]
 

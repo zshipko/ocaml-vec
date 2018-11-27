@@ -4,17 +4,11 @@ An [ocaml-rs](https://github.com/zshipko/ocaml-rs) wrapper around the Rust `Vec`
 
 ## Building
 
-    make
+    dune build
 
 to run the tests:
 
-    make test
-
-or to build manually:
-
-    cargo build
-    jbuilder build
-    jbuilder runtest
+    dune runtest
 
 ## Installation
 

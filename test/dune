@@ -1,0 +1,10 @@
+(executables
+    (libraries vec)
+    (names test)
+    (modules test))
+
+(alias
+    (name runtest)
+    (package vec)
+    (deps (:bin test.exe))
+    (action (run %{bin})))
