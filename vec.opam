@@ -3,7 +3,7 @@ maintainer: "zachshipko@gmail.com"
 authors: ["Zach Shipko"]
 homepage: "https://github.com/zshipko/ocaml-vec"
 bug-reports: "https://github.com/zshipko/ocaml-vec/issues"
-dev-repo: "https://github.com/zshipko/ocaml-vec.git"
+dev-repo: "git+https://github.com/zshipko/ocaml-vec.git"
 license: "ISC"
 
 depends: [
