@@ -10,22 +10,14 @@ extern "C" fn finalize(value: ocaml::core::Value) {
     println!("Finalize");
 }
 
-macro_rules! load_vec {
+macro_rules! modify_vec {
     ($v:ident, $vec:ident, $block:block) => {
         let mut $vec = &mut *$v.custom_ptr_val_mut::<Vec<i32>>();
 
         $block
 
         mem::forget($vec);
-    }
-}
-
-macro_rules! modify_vec {
-    ($v:ident, $vec:ident, $block:block) => {
-        load_vec!($v, $vec, {
-            $block
-        });
-    }
+    };
 }
 
 caml!(vec_create, |n|, <dest>, {
@@ -62,7 +54,7 @@ caml!(vec_clear, |handle|, {
 });
 
 caml!(vec_index, |handle, index|, <dest>, {
-    load_vec!(handle, vec, {
+    modify_vec!(handle, vec, {
         if vec.len() <= index.usize_val() {
             dest = ocaml::Value::none();
         } else {
@@ -72,7 +64,7 @@ caml!(vec_index, |handle, index|, <dest>, {
 } -> dest);
 
 caml!(vec_set_index, |handle, index, x|, {
-    load_vec!(handle, vec, {
+    modify_vec!(handle, vec, {
         if vec.len() <= index.usize_val() {
             return
         }

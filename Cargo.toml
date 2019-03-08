@@ -7,4 +7,4 @@ authors = ["Zach Shipko <zachshipko@gmail.com>"]
 crate-type = ["staticlib", "cdylib"]
 
 [dependencies]
-ocaml = "0.4"
+ocaml = {git = "https://github.com/zshipko/ocaml-rs"}
