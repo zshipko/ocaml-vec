@@ -10,65 +10,54 @@ extern "C" fn finalize(value: ocaml::core::Value) {
     println!("Finalize");
 }
 
-macro_rules! modify_vec {
-    ($v:ident, $vec:ident, $block:block) => {
-        let mut $vec = &mut *$v.custom_ptr_val_mut::<Vec<i32>>();
-
-        $block
-
-        mem::forget($vec);
-    };
-}
-
-caml!(vec_create, |n|, <dest>, {
+caml!(vec_create(n) {
     let mut vec: Vec<i32> = Vec::with_capacity(n.usize_val());
     let ptr = &mut vec as *mut Vec<i32>;
     mem::forget(vec);
-    dest = ocaml::Value::alloc_custom(ptr, finalize);
-} -> dest);
+    ocaml::Value::alloc_custom(ptr, finalize)
+});
 
-caml!(vec_length, |handle|, <dest>, {
+caml!(vec_length(handle) {
     let p = handle.custom_ptr_val::<Vec<i32>>();
-    dest = ocaml::Value::usize((*p).len())
-} -> dest);
-
-caml!(vec_push, |handle, x|, {
-    modify_vec!(handle, vec, {
-        vec.push(x.i32_val());
-    });
+    ocaml::Value::usize((*p).len())
 });
 
-caml!(vec_pop, |handle|, <dest>, {
-    modify_vec!(handle, vec, {
-        dest = match vec.pop() {
-            Some(x) => ocaml::Value::some(x),
-            None => ocaml::Value::none()
-        };
-    });
-} -> dest);
-
-caml!(vec_clear, |handle|, {
-    modify_vec!(handle, vec, {
-        vec.clear()
-    });
+caml!(vec_push(handle, x) {
+    let vec = &mut *handle.custom_ptr_val_mut::<Vec<i32>>();
+    vec.push(x.i32_val());
+    ocaml::Value::unit()
 });
 
-caml!(vec_index, |handle, index|, <dest>, {
-    modify_vec!(handle, vec, {
-        if vec.len() <= index.usize_val() {
-            dest = ocaml::Value::none();
-        } else {
-            dest = ocaml::Value::some(vec[index.usize_val()].clone())
-        }
-    });
-} -> dest);
+caml!(vec_pop(handle) {
+    let vec = &mut *handle.custom_ptr_val_mut::<Vec<i32>>();
+    match vec.pop() {
+        Some(x) => ocaml::Value::some(x),
+        None => ocaml::Value::none()
+    }
+});
 
-caml!(vec_set_index, |handle, index, x|, {
-    modify_vec!(handle, vec, {
-        if vec.len() <= index.usize_val() {
-            return
-        }
+caml!(vec_clear(handle) {
+    let vec = &mut *handle.custom_ptr_val_mut::<Vec<i32>>();
+    vec.clear();
+    ocaml::Value::unit()
+});
 
-        vec[index.usize_val()] = x.i32_val();
-    });
+caml!(vec_index(handle, index) {
+    let vec = &mut *handle.custom_ptr_val_mut::<Vec<i32>>();
+    if vec.len() <= index.usize_val() {
+        ocaml::Value::none()
+    } else {
+        ocaml::Value::some(vec[index.usize_val()])
+    }
+});
+
+caml!(vec_set_index(handle, index, x) {
+    let vec = &mut *handle.custom_ptr_val_mut::<Vec<i32>>();
+    if vec.len() <= index.usize_val() {
+        return ocaml::Value::unit();
+    }
+
+    vec[index.usize_val()] = x.i32_val();
+
+    ocaml::Value::unit()
 });
