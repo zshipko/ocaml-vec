@@ -1,63 +1,53 @@
-#[macro_use]
-extern crate ocaml;
+use ocaml::{FromValue, Pointer, Value};
 
-use std::mem;
-
-extern "C" fn finalize(value: ocaml::core::Value) {
-    let handle = ocaml::Value(value);
-    let ptr = handle.custom_ptr_val_mut::<Vec<i32>>();
-    mem::drop(ptr);
-    println!("Finalize");
+extern "C" fn finalize(value: Value) {
+    let mut ptr: Pointer<Vec<ocaml::Int>> = Pointer::from_value(value);
+    println!("{}", ptr.data().len());
+    unsafe {
+        std::ptr::drop_in_place(ptr.ptr_mut());
+    }
 }
 
-caml!(vec_create(n) {
-    let mut vec: Vec<i32> = Vec::with_capacity(n.usize_val());
-    let ptr = &mut vec as *mut Vec<i32>;
-    mem::forget(vec);
-    ocaml::Value::alloc_custom(ptr, finalize)
-});
+#[ocaml::func]
+pub fn vec_create(n: ocaml::Int) -> Pointer<'static, Vec<ocaml::Int>> {
+    let mut vec: Vec<ocaml::Int> = vec![0; n as usize];
+    let ptr = &mut vec as *mut Vec<_>;
+    std::mem::forget(vec);
+    Pointer::new(ptr, Some(finalize))
+}
 
-caml!(vec_length(handle) {
-    let p = handle.custom_ptr_val::<Vec<i32>>();
-    ocaml::Value::usize((*p).len())
-});
+#[ocaml::func]
+pub fn vec_length(handle: Pointer<Vec<ocaml::Int>>) -> ocaml::Int {
+    let p = handle.data();
+    p.len() as ocaml::Int
+}
 
-caml!(vec_push(handle, x) {
-    let vec = &mut *handle.custom_ptr_val_mut::<Vec<i32>>();
-    vec.push(x.i32_val());
-    ocaml::Value::unit()
-});
+#[ocaml::func]
+pub fn vec_push(mut handle: Pointer<Vec<ocaml::Int>>, x: ocaml::Int) {
+    let p = handle.data_mut();
+    p.push(x);
+}
 
-caml!(vec_pop(handle) {
-    let vec = &mut *handle.custom_ptr_val_mut::<Vec<i32>>();
-    match vec.pop() {
-        Some(x) => ocaml::Value::some(x),
-        None => ocaml::Value::none()
-    }
-});
+#[ocaml::func]
+pub fn vec_pop(mut handle: Pointer<Vec<ocaml::Int>>) -> Option<ocaml::Int> {
+    let p = handle.data_mut();
+    p.pop()
+}
 
-caml!(vec_clear(handle) {
-    let vec = &mut *handle.custom_ptr_val_mut::<Vec<i32>>();
-    vec.clear();
-    ocaml::Value::unit()
-});
+#[ocaml::func]
+pub fn vec_clear(mut handle: Pointer<Vec<ocaml::Int>>) {
+    let p = handle.data_mut();
+    p.clear();
+}
 
-caml!(vec_index(handle, index) {
-    let vec = &mut *handle.custom_ptr_val_mut::<Vec<i32>>();
-    if vec.len() <= index.usize_val() {
-        ocaml::Value::none()
-    } else {
-        ocaml::Value::some(vec[index.usize_val()])
-    }
-});
+#[ocaml::func]
+pub fn vec_index(handle: Pointer<Vec<ocaml::Int>>, index: ocaml::Int) -> Option<ocaml::Int> {
+    let p = handle.data();
+    p.get(index as usize).map(|x| *x)
+}
 
-caml!(vec_set_index(handle, index, x) {
-    let vec = &mut *handle.custom_ptr_val_mut::<Vec<i32>>();
-    if vec.len() <= index.usize_val() {
-        return ocaml::Value::unit();
-    }
-
-    vec[index.usize_val()] = x.i32_val();
-
-    ocaml::Value::unit()
-});
+#[ocaml::func]
+pub fn vec_set_index(mut handle: Pointer<Vec<ocaml::Int>>, index: ocaml::Int, x: ocaml::Int) {
+    let p = handle.data_mut();
+    p[index as usize] = x;
+}

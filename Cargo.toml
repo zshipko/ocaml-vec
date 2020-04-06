@@ -2,9 +2,10 @@
 name = "vec_stubs"
 version = "0.1.0"
 authors = ["Zach Shipko <zachshipko@gmail.com>"]
+edition = "2018"
 
 [lib]
 crate-type = ["staticlib", "cdylib"]
 
 [dependencies]
-ocaml = {git = "https://github.com/zshipko/ocaml-rs"}
+ocaml = {path = "../ocaml-rs"} # {git = "https://github.com/zshipko/ocaml-rs", branch = "cleanup1"}
