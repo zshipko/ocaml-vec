@@ -8,7 +8,8 @@ license: "ISC"
 
 depends: [
     "ocaml" {>= "4.03.0"}
-    "dune" {build}
+    "dune"
+    "conf-rust-2018" {build}
 ]
 
 build: [

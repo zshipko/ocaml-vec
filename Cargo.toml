@@ -8,4 +8,5 @@ edition = "2018"
 crate-type = ["staticlib", "cdylib"]
 
 [dependencies]
-ocaml = {path = "../ocaml-rs"} # {git = "https://github.com/zshipko/ocaml-rs", branch = "cleanup1"}
+#path = "../ocaml-rs"
+ocaml = {git = "https://github.com/zshipko/ocaml-rs", branch="cleanup1"}
