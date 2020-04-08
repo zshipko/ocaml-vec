@@ -5,8 +5,9 @@
     (targets libvec_stubs.a dllvec_stubs.so)
     (action
         (progn
-            (run cargo build -Z unstable-options --out-dir . --target-dir ../rust --release)
-            (run mv libvec_stubs.so ./dllvec_stubs.so)
+            (run cargo build --target-dir ../rust --release)
+            (run sh -c "mv ../rust/release/libvec_stubs.so ./dllvec_stubs.so || mv ../rust/release/libvec_stubs.dylib ./dllvec_stubs.so")
+            (run mv ../rust/release/libvec_stubs.a libvec_stubs.a)
         )
     )
 )
