@@ -1,6 +1,6 @@
 type t
 
-external create : int -> t = "vec_create"
+external create : int -> t = "vec_create" "vec_create"
 
 external length : t -> int = "vec_length"
 

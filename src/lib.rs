@@ -1,8 +1,8 @@
 use ocaml::Pointer;
 
-extern "C" fn finalize(value: ocaml::Value) {
+unsafe extern "C" fn finalize(value: ocaml::Value) {
     let ptr = value.custom_mut_ptr_val::<Vec<ocaml::Int>>();
-    unsafe { std::ptr::drop_in_place(ptr) }
+    std::ptr::drop_in_place(ptr)
 }
 
 #[ocaml::func]
