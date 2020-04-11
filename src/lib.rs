@@ -1,8 +1,8 @@
-use ocaml::Pointer;
+use ocaml::{FromValue, Pointer};
 
 unsafe extern "C" fn finalize(value: ocaml::Value) {
-    let ptr = value.custom_mut_ptr_val::<Vec<ocaml::Int>>();
-    std::ptr::drop_in_place(ptr)
+    let ptr = Pointer::<Vec<ocaml::Int>>::from_value(value);
+    ptr.drop_in_place();
 }
 
 #[ocaml::func]
