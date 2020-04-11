@@ -1,20 +1,19 @@
 (include_subdirs unqualified)
 
 (rule
-    (deps (source_tree .))
-    (targets libvec_stubs.a dllvec_stubs.so)
-    (action
-        (progn
-            (run cargo build --target-dir ../rust --release)
-            (run sh -c "mv ../rust/release/libvec_stubs.so ./dllvec_stubs.so || mv ../rust/release/libvec_stubs.dylib ./dllvec_stubs.so")
-            (run mv ../rust/release/libvec_stubs.a libvec_stubs.a)
-        )
-    )
-)
+ (deps
+  (source_tree .))
+ (targets libvec_stubs.a dllvec_stubs.so)
+ (action
+  (progn
+   (run cargo build --target-dir ../rust --release)
+   (run sh -c
+     "mv ../rust/release/libvec_stubs.so ./dllvec_stubs.so || mv ../rust/release/libvec_stubs.dylib ./dllvec_stubs.so")
+   (run mv ../rust/release/libvec_stubs.a libvec_stubs.a))))
 
 (library
-   (name vec)
-   (public_name vec)
-   (self_build_stubs_archive (vec))
-   (c_library_flags (-lpthread -lc -lm))
-)
+ (name vec)
+ (public_name vec)
+ (foreign_archives vec_stubs)
+ (c_library_flags
+  (-lpthread -lc -lm)))

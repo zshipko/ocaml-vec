@@ -1,1 +1,3 @@
-(lang dune 1.5)
+(lang dune 2.0)
+
+(name ocaml-vec)
