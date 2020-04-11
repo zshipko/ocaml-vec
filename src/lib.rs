@@ -1,9 +1,14 @@
 use ocaml::Pointer;
 
+extern "C" fn finalize(value: ocaml::Value) {
+    let ptr = value.custom_mut_ptr_val::<Vec<ocaml::Int>>();
+    unsafe { std::ptr::drop_in_place(ptr) }
+}
+
 #[ocaml::func]
 pub fn vec_create(n: ocaml::Int) -> Pointer<'static, Vec<ocaml::Int>> {
     let vec: Vec<ocaml::Int> = Vec::with_capacity(n as usize);
-    let mut ptr: Pointer<Vec<ocaml::Int>> = Pointer::alloc(None, None);
+    let mut ptr: Pointer<Vec<ocaml::Int>> = Pointer::alloc_final(Some(finalize), None);
     ptr.set(vec);
     ptr
 }
