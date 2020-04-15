@@ -6,10 +6,9 @@ unsafe extern "C" fn finalize(value: ocaml::Value) {
 }
 
 #[ocaml::func]
-pub fn vec_create(n: ocaml::Int) -> Pointer<'static, Vec<ocaml::Int>> {
+pub fn vec_create(n: ocaml::Int) -> Pointer<Vec<ocaml::Int>> {
     let vec: Vec<ocaml::Int> = Vec::with_capacity(n as usize);
-    let mut ptr: Pointer<Vec<ocaml::Int>> = Pointer::alloc_final(Some(finalize), None);
-    ptr.set(vec);
+    let mut ptr: Pointer<Vec<ocaml::Int>> = Pointer::alloc_final(vec, Some(finalize), None);
     ptr
 }
 
