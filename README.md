@@ -12,8 +12,7 @@ to run the tests:
 
 ## Installation
 
-    opam pin add vec . --inplace-build
-
+    opam pin add vec .
 
 ## API
 
