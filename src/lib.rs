@@ -32,9 +32,10 @@ pub fn vec_push(mut handle: Pointer<Vec<ocaml::Value>>, mut x: ocaml::Value) {
 
 #[ocaml::func]
 pub fn vec_pop(mut handle: Pointer<Vec<ocaml::Value>>) -> Option<ocaml::Value> {
-    let p = handle.as_mut();
     ocaml::local!(x);
+    let p = handle.as_mut();
     x = p.pop()?;
+    x.remove_global_root();
     Some(x)
 }
 
