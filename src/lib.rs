@@ -1,8 +1,12 @@
 use ocaml::{FromValue, Pointer};
 
+fn remove_all_roots(p: &mut Vec<ocaml::Value>) {
+    p.iter_mut().for_each(|x| x.remove_global_root());
+}
+
 unsafe extern "C" fn finalize(value: ocaml::Value) {
     let mut ptr = Pointer::<Vec<ocaml::Value>>::from_value(value);
-    ptr.as_mut().iter_mut().for_each(|x| x.remove_global_root());
+    remove_all_roots(ptr.as_mut());
     ptr.drop_in_place();
 }
 
@@ -37,7 +41,7 @@ pub fn vec_pop(mut handle: Pointer<Vec<ocaml::Value>>) -> Option<ocaml::Value> {
 #[ocaml::func]
 pub fn vec_clear(mut handle: Pointer<Vec<ocaml::Value>>) {
     let p = handle.as_mut();
-    p.iter_mut().for_each(|x| x.remove_global_root());
+    remove_all_roots(p);
     p.clear();
 }
 
