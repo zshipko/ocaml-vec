@@ -21,7 +21,7 @@ Take a look at [test/src/dune](https://github.com/zshipko/ocaml-rs/blob/master/t
 Typically just include:
 
 ```toml
-ocaml = "0.11"
+ocaml = "0.10"
 ```
 
 or
@@ -50,8 +50,6 @@ Additionally, if you plan on releasing to OPAM, you will need to vendor your Rus
   * enabled by default, adds `#[ocaml::func]` and friends and `derive` implementations for `FromValue` and `ToValue`
 - `link`
   * link the native OCaml runtime, this enables `ocaml::runtime::init`, which is equivalent to `caml_main`
-- `no-std`
-  * Allows `ocaml` to be used in `#![no_std]` environments like MirageOS
 - `deep-clone`
   * enables `Value::deep_clone_to_ocaml` and `Value::deep_clone_to_rust`
 
@@ -97,7 +95,7 @@ pub fn average(arr: ocaml::Array<f64>) -> Result<f64, ocaml::Error> {
 #[ocaml::native_func]
 pub fn incr(value: ocaml::Value) -> ocaml::Value {
     let i = value.int_val();
-    ocaml::Value::int(i + 1)
+    Value::int(i + 1)
 }
 
 // This is equivalent to:
@@ -175,9 +173,9 @@ This chart contains the mapping between Rust and OCaml types used by `ocaml::fun
 | `BTreeMap<A, B>` | `('a, 'b) list`      |
 | `LinkedList<A>`  | `'a list`            |
 
-Even though `&[Value]` is specifically marked as no copy, a type like `Option<Value>` would also qualify since the inner value is not converted to a Rust type. However, `Option<String>` will do full unmarshaling into Rust types. Another thing to note: `FromValue` for `str` and `&[u8]` is zero-copy, however `ToValue` for `str` and `&[u8]` creates a new value - this is necessary to ensure the string is registered with the OCaml runtime.
+Even though `&[Value]` is specifically marked as no copy, a type like `Option<Value>` would also qualify since the inner value is not converted to a Rust type. However, `Option<String>` will do full unmarshaling into Rust types. Another thing to note: `FromValue` for `str` is zero-copy, however `ToValue` for `str` creates a new value - this is necessary to ensure the string lives long enough.
 
-If you're concerned with minimizing allocations/conversions you should use `Value` type directly.
+If you're concerned with minimizing allocations/conversions you should prefer to use `Value` type directly.
 
 ## Upgrading
 
@@ -197,3 +195,4 @@ Since 0.10 and later have a much different API compared to earlier version, here
 - Strings are converted to `str` or `String`, rather than using the `Str` type
 - Tuples are converted to Rust tuples (up to 20 items), rather than using the `Tuple` type
 - The `core` module has been renamed to `sys` and is now just an alias for the `ocaml-sys` crate and all sub-module have been removed
+

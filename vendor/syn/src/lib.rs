@@ -242,7 +242,7 @@
 //!   dynamic library libproc_macro from rustc toolchain.
 
 // Syn types in rustdoc of other crates get linked to here.
-#![doc(html_root_url = "https://docs.rs/syn/1.0.17")]
+#![doc(html_root_url = "https://docs.rs/syn/1.0.18")]
 #![deny(clippy::all, clippy::pedantic)]
 // Ignored clippy lints.
 #![allow(
@@ -275,7 +275,8 @@
     clippy::too_many_lines,
     clippy::unseparated_literal_suffix,
     clippy::use_self,
-    clippy::used_underscore_binding
+    clippy::used_underscore_binding,
+    clippy::wildcard_imports
 )]
 
 #[cfg(all(

@@ -173,7 +173,6 @@ unsafe impl FromValue for bool {
     }
 }
 
-#[cfg(not(feature = "no-std"))]
 unsafe impl ToValue for String {
     fn to_value(self) -> Value {
         unsafe {
@@ -185,7 +184,6 @@ unsafe impl ToValue for String {
     }
 }
 
-#[cfg(not(feature = "no-std"))]
 unsafe impl FromValue for String {
     fn from_value(value: Value) -> String {
         let len = unsafe { crate::sys::caml_string_length(value.0) };
@@ -227,8 +225,8 @@ unsafe impl FromValue for &str {
         let len = unsafe { crate::sys::caml_string_length(value.0) };
         let ptr = unsafe { crate::sys::string_val(value.0) };
         unsafe {
-            let slice = ::core::slice::from_raw_parts(ptr, len);
-            ::core::str::from_utf8(slice).expect("Invalid UTF-8")
+            let slice = ::std::slice::from_raw_parts(ptr, len);
+            ::std::str::from_utf8(slice).expect("Invalid UTF-8")
         }
     }
 }
@@ -238,7 +236,7 @@ unsafe impl ToValue for &str {
         unsafe {
             let value = crate::sys::caml_alloc_string(self.len());
             let ptr = crate::sys::string_val(value);
-            core::ptr::copy_nonoverlapping(self.as_ptr(), ptr, self.len());
+            std::ptr::copy_nonoverlapping(self.as_ptr(), ptr, self.len());
             Value(value)
         }
     }
@@ -249,8 +247,8 @@ unsafe impl FromValue for &mut str {
         let len = unsafe { crate::sys::caml_string_length(value.0) };
         let ptr = unsafe { crate::sys::string_val(value.0) };
         unsafe {
-            let slice = ::core::slice::from_raw_parts_mut(ptr, len);
-            ::core::str::from_utf8_mut(slice).expect("Invalid UTF-8")
+            let slice = ::std::slice::from_raw_parts_mut(ptr, len);
+            ::std::str::from_utf8_mut(slice).expect("Invalid UTF-8")
         }
     }
 }
@@ -260,7 +258,7 @@ unsafe impl ToValue for &mut str {
         unsafe {
             let value = crate::sys::caml_alloc_string(self.len());
             let ptr = crate::sys::string_val(value);
-            core::ptr::copy_nonoverlapping(self.as_ptr(), ptr, self.len());
+            std::ptr::copy_nonoverlapping(self.as_ptr(), ptr, self.len());
             Value(value)
         }
     }
@@ -270,7 +268,7 @@ unsafe impl FromValue for &[u8] {
     fn from_value(value: Value) -> Self {
         let len = unsafe { crate::sys::caml_string_length(value.0) };
         let ptr = unsafe { crate::sys::string_val(value.0) };
-        unsafe { ::core::slice::from_raw_parts(ptr, len) }
+        unsafe { ::std::slice::from_raw_parts(ptr, len) }
     }
 }
 
@@ -279,7 +277,7 @@ unsafe impl ToValue for &[u8] {
         unsafe {
             let value = crate::sys::caml_alloc_string(self.len());
             let ptr = crate::sys::string_val(value);
-            core::ptr::copy_nonoverlapping(self.as_ptr(), ptr, self.len());
+            std::ptr::copy_nonoverlapping(self.as_ptr(), ptr, self.len());
             Value(value)
         }
     }
@@ -289,7 +287,7 @@ unsafe impl FromValue for &mut [u8] {
     fn from_value(value: Value) -> Self {
         let len = unsafe { crate::sys::caml_string_length(value.0) };
         let ptr = unsafe { crate::sys::string_val(value.0) };
-        unsafe { ::core::slice::from_raw_parts_mut(ptr, len) }
+        unsafe { ::std::slice::from_raw_parts_mut(ptr, len) }
     }
 }
 
@@ -298,13 +296,12 @@ unsafe impl ToValue for &mut [u8] {
         unsafe {
             let value = crate::sys::caml_alloc_string(self.len());
             let ptr = crate::sys::string_val(value);
-            core::ptr::copy_nonoverlapping(self.as_ptr(), ptr, self.len());
+            std::ptr::copy_nonoverlapping(self.as_ptr(), ptr, self.len());
             Value(value)
         }
     }
 }
 
-#[cfg(not(feature = "no-std"))]
 unsafe impl<V: ToValue> ToValue for Vec<V> {
     fn to_value(self) -> Value {
         let len = self.len();
@@ -318,7 +315,6 @@ unsafe impl<V: ToValue> ToValue for Vec<V> {
     }
 }
 
-#[cfg(not(feature = "no-std"))]
 unsafe impl<V: FromValue> FromValue for Vec<V> {
     fn from_value(v: Value) -> Vec<V> {
         unsafe {
@@ -333,7 +329,7 @@ unsafe impl<V: FromValue> FromValue for Vec<V> {
 }
 
 unsafe fn as_slice<'a>(value: Value) -> &'a [Value] {
-    ::core::slice::from_raw_parts(
+    ::std::slice::from_raw_parts(
         (value.0 as *const Value).offset(-1),
         crate::sys::wosize_val(value.0) + 1,
     )
@@ -348,7 +344,7 @@ unsafe impl<'a> FromValue for &'a [Value] {
 unsafe impl<'a> FromValue for &'a mut [Value] {
     fn from_value(v: Value) -> &'a mut [Value] {
         unsafe {
-            ::core::slice::from_raw_parts_mut(
+            ::std::slice::from_raw_parts_mut(
                 (v.0 as *mut Value).offset(-1),
                 crate::sys::wosize_val(v.0) + 1,
             )
@@ -356,7 +352,6 @@ unsafe impl<'a> FromValue for &'a mut [Value] {
     }
 }
 
-#[cfg(not(feature = "no-std"))]
 unsafe impl<K: Ord + FromValue, V: FromValue> FromValue for std::collections::BTreeMap<K, V> {
     fn from_value(v: Value) -> std::collections::BTreeMap<K, V> {
         let mut dest = std::collections::BTreeMap::new();
@@ -372,7 +367,6 @@ unsafe impl<K: Ord + FromValue, V: FromValue> FromValue for std::collections::BT
     }
 }
 
-#[cfg(not(feature = "no-std"))]
 unsafe impl<K: ToValue, V: ToValue> ToValue for std::collections::BTreeMap<K, V> {
     fn to_value(self) -> Value {
         let mut list = crate::List::empty();
@@ -387,7 +381,6 @@ unsafe impl<K: ToValue, V: ToValue> ToValue for std::collections::BTreeMap<K, V>
     }
 }
 
-#[cfg(not(feature = "no-std"))]
 unsafe impl<T: FromValue> FromValue for std::collections::LinkedList<T> {
     fn from_value(v: Value) -> std::collections::LinkedList<T> {
         let mut dest = std::collections::LinkedList::new();
@@ -403,7 +396,6 @@ unsafe impl<T: FromValue> FromValue for std::collections::LinkedList<T> {
     }
 }
 
-#[cfg(not(feature = "no-std"))]
 unsafe impl<T: ToValue> ToValue for std::collections::LinkedList<T> {
     fn to_value(self) -> Value {
         let mut list = crate::List::empty();
