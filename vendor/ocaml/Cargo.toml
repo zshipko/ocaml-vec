@@ -1,0 +1,34 @@
+[package]
+name = "ocaml"
+version = "0.11.0"
+authors = ["Zach Shipko <zachshipko@gmail.com>"]
+readme = "README.md"
+keywords = ["ocaml", "rust", "ffi"]
+repository = "https://github.com/zshipko/ocaml-rs"
+license = "ISC"
+description = "OCaml bindings for Rust"
+documentation = "https://docs.rs/ocaml"
+edition = "2018"
+
+[package.metadata.docs.rs]
+features = [ "docs-rs", "derive", "deep-clone", "link" ]
+
+[dependencies]
+ocaml-sys = {path = "./sys", version = "0.11"}
+ocaml-derive = {path = "./derive", optional = true, version = "0.11"}
+cstr_core = {version = "0.2", optional = true}
+
+[features]
+default = ["derive"]
+derive = ["ocaml-derive"]
+link = ["ocaml-sys/link"]
+deep-clone = []
+docs-rs = ["ocaml-sys/docs-rs"]
+no-std = ["cstr_core/alloc"]
+
+[workspace]
+members = [
+  "derive",
+  "sys",
+  "test",
+]

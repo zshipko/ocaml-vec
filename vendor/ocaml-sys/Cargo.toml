@@ -1,0 +1,20 @@
+[package]
+name = "ocaml-sys"
+version = "0.11.0"
+authors = ["Zach Shipko <zachshipko@gmail.com>"]
+keywords = ["ocaml", "rust", "ffi"]
+repository = "https://github.com/zshipko/ocaml-rs"
+license = "ISC"
+description = "Low-level OCaml bindings for Rust"
+documentation = "https://docs.rs/ocaml-sys"
+edition = "2018"
+
+[dependencies]
+
+[package.metadata.docs.rs]
+features = [ "docs-rs" ]
+
+[features]
+link = []
+docs-rs = []
+
