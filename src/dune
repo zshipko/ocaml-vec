@@ -1,16 +1,14 @@
 (include_subdirs unqualified)
 
 (rule
- (deps
-  (source_tree ..))
  (targets libvec_stubs.a dllvec_stubs.so)
  (action
   (progn
    (run cargo clean)
-   (run cargo build --offline --target-dir /tmp/ocaml-rs --release)
+   (run cargo build --offline --target-dir %{project_root}/target --release)
    (run sh -c
-     "mv /tmp/ocaml-rs/release/libvec_stubs.so ./dllvec_stubs.so || mv /tmp/ocaml-rs/release/libvec_stubs.dylib ./dllvec_stubs.so")
-   (run mv /tmp/ocaml-rs/release/libvec_stubs.a libvec_stubs.a))))
+     "mv %{project_root}/target/release/libvec_stubs.so ./dllvec_stubs.so || mv %{project_root}/target/release/libvec_stubs.dylib ./dllvec_stubs.so")
+   (run mv %{project_root}/target/release/libvec_stubs.a libvec_stubs.a))))
 
 (library
  (name vec)
