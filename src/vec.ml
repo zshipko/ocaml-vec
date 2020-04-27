@@ -1,18 +1,18 @@
-type t
+type 'a t
 
-external create : int -> t = "vec_create" "vec_create"
+external create : int -> 'a t = "vec_create"
 
-external length : t -> int = "vec_length"
+external length : 'a t -> int = "vec_length"
 
-external push : t -> int -> unit = "vec_push"
+external push : 'a t -> 'a -> unit = "vec_push"
 
-external pop : t -> int option = "vec_pop"
+external pop : 'a t -> 'a option = "vec_pop"
 
-external clear : t -> unit = "vec_clear"
+external clear : 'a t -> unit = "vec_clear"
 
-external get : t -> int -> int option = "vec_index"
+external get : 'a t -> int -> 'a option = "vec_index"
 
-external set : t -> int -> int -> unit = "vec_set_index"
+external set : 'a t -> int -> 'a -> unit = "vec_set_index"
 
 let ( .|[] ) = get
 
