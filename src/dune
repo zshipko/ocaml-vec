@@ -7,7 +7,7 @@
  (action
   (progn
    (run cargo clean)
-   (run cargo build --target-dir /var/tmp/ocaml-rs --release)
+   (run cargo build --offline --target-dir /var/tmp/ocaml-rs --release)
    (run sh -c
      "mv /var/tmp/ocaml-rs/release/libvec_stubs.so ./dllvec_stubs.so || mv /var/tmp/ocaml-rs/release/libvec_stubs.dylib ./dllvec_stubs.so")
    (run mv /var/tmp/ocaml-rs/release/libvec_stubs.a libvec_stubs.a))))

@@ -1,2 +1,14 @@
 [build]
 rustflags = ["-C", "link-args=-Wl,-undefined,dynamic_lookup"]
+
+[source.crates-io]
+replace-with = "vendored-sources"
+
+[source."git://github.com/zshipko/ocaml-rs"]
+git = "git://github.com/zshipko/ocaml-rs"
+branch = "master"
+replace-with = "vendored-sources"
+
+[source.vendored-sources]
+directory = "vendor"
+
