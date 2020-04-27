@@ -4,15 +4,22 @@ A generic `Vec` for OCaml written in Rust using [ocaml-rs](https://github.com/zs
 
 ## Building
 
-    dune build
+```
+$ dune build
+```
 
 to run the tests:
 
-    dune runtest
+```
+$ dune runtest
+```
 
 ## Installation
 
-    opam pin add vec .
+```
+$ dune build @install
+$ dune install
+```
 
 ## API
 

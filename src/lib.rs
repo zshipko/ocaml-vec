@@ -1,12 +1,7 @@
 use ocaml::{FromValue, Pointer};
 
-fn remove_all_roots(p: &mut Vec<ocaml::Value>) {
-    p.iter_mut().for_each(|x| x.remove_global_root());
-}
-
 unsafe extern "C" fn finalize(value: ocaml::Value) {
-    let mut ptr = Pointer::<Vec<ocaml::Value>>::from_value(value);
-    remove_all_roots(ptr.as_mut());
+    let ptr = Pointer::<Vec<ocaml::Value>>::from_value(value);
     ptr.drop_in_place();
 }
 
@@ -26,30 +21,25 @@ pub fn vec_length(handle: Pointer<Vec<ocaml::Value>>) -> ocaml::Int {
 #[ocaml::func]
 pub fn vec_push(mut handle: Pointer<Vec<ocaml::Value>>, mut x: ocaml::Value) {
     let p = handle.as_mut();
-    x.register_global_root();
-    p.push(x);
+    p.push(x.deep_clone_to_rust());
 }
 
 #[ocaml::func]
 pub fn vec_pop(mut handle: Pointer<Vec<ocaml::Value>>) -> Option<ocaml::Value> {
-    ocaml::local!(x);
     let p = handle.as_mut();
-    x = p.pop()?;
-    x.remove_global_root();
-    Some(x)
+    Some(p.pop()?.deep_clone_to_ocaml())
 }
 
 #[ocaml::func]
 pub fn vec_clear(mut handle: Pointer<Vec<ocaml::Value>>) {
     let p = handle.as_mut();
-    remove_all_roots(p);
     p.clear();
 }
 
 #[ocaml::func]
 pub fn vec_index(handle: Pointer<Vec<ocaml::Value>>, index: ocaml::Int) -> Option<ocaml::Value> {
     let p = handle.as_ref();
-    p.get(index as usize).map(|x| *x)
+    p.get(index as usize).map(|x| x.deep_clone_to_ocaml())
 }
 
 #[ocaml::func]
@@ -59,6 +49,5 @@ pub fn vec_set_index(
     mut x: ocaml::Value,
 ) {
     let p = handle.as_mut();
-    x.register_global_root();
-    p[index as usize] = x;
+    p[index as usize] = x.deep_clone_to_rust();
 }
