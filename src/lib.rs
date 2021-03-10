@@ -8,7 +8,7 @@ unsafe extern "C" fn finalize(value: ocaml::Value) {
 #[ocaml::func]
 pub fn vec_create(n: ocaml::Int) -> Pointer<Vec<ocaml::Value>> {
     let vec: Vec<ocaml::Value> = Vec::with_capacity(n as usize);
-    let mut ptr: Pointer<Vec<ocaml::Value>> = Pointer::alloc_final(vec, Some(finalize), None);
+    let ptr: Pointer<Vec<ocaml::Value>> = Pointer::alloc_final(gc, vec, Some(finalize), None);
     ptr
 }
 
@@ -19,15 +19,15 @@ pub fn vec_length(handle: Pointer<Vec<ocaml::Value>>) -> ocaml::Int {
 }
 
 #[ocaml::func]
-pub fn vec_push(mut handle: Pointer<Vec<ocaml::Value>>, mut x: ocaml::Value) {
+pub unsafe fn vec_push(mut handle: Pointer<Vec<ocaml::Value>>, x: ocaml::Value) {
     let p = handle.as_mut();
     p.push(x.deep_clone_to_rust());
 }
 
 #[ocaml::func]
-pub fn vec_pop(mut handle: Pointer<Vec<ocaml::Value>>) -> Option<ocaml::Value> {
+pub unsafe fn vec_pop(mut handle: Pointer<Vec<ocaml::Value>>) -> Option<ocaml::Value> {
     let p = handle.as_mut();
-    Some(p.pop()?.deep_clone_to_ocaml())
+    Some(p.pop()?.deep_clone_to_ocaml(gc))
 }
 
 #[ocaml::func]
@@ -37,16 +37,19 @@ pub fn vec_clear(mut handle: Pointer<Vec<ocaml::Value>>) {
 }
 
 #[ocaml::func]
-pub fn vec_index(handle: Pointer<Vec<ocaml::Value>>, index: ocaml::Int) -> Option<ocaml::Value> {
+pub unsafe fn vec_index(
+    handle: Pointer<Vec<ocaml::Value>>,
+    index: ocaml::Int,
+) -> Option<ocaml::Value> {
     let p = handle.as_ref();
-    p.get(index as usize).map(|x| x.deep_clone_to_ocaml())
+    p.get(index as usize).map(|x| x.deep_clone_to_ocaml(gc))
 }
 
 #[ocaml::func]
-pub fn vec_set_index(
+pub unsafe fn vec_set_index(
     mut handle: Pointer<Vec<ocaml::Value>>,
     index: ocaml::Int,
-    mut x: ocaml::Value,
+    x: ocaml::Value,
 ) {
     let p = handle.as_mut();
     p[index as usize] = x.deep_clone_to_rust();
